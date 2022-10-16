@@ -15,7 +15,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    minlength: 8,
     required: true,
     select: false,
     validator(v) {
@@ -25,7 +24,7 @@ const userSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    required: false,
+    required: true,
     minlength: 2,
     maxlength: 30,
   },

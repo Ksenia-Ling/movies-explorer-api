@@ -10,19 +10,22 @@ const UNAUTHORIZED_ERROR = require('../errors/unauthorizedError');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const User = require('../models/user');
+const {
+  notFoundUser, wrongIdUser, badRequestUser, conflictUser, unauthorisedUser,
+} = require('../utils/errorMessages');
 
 // возвращает информацию о пользователе (email и имя)
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NOT_FOUND_ERROR('Запрашиваемый пользователь не найден');
+        throw new NOT_FOUND_ERROR(notFoundUser);
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BAD_REQUEST_ERROR('Некорректный id пользователя'));
+        next(new BAD_REQUEST_ERROR(wrongIdUser));
         return;
       }
       next(err);
@@ -47,11 +50,11 @@ module.exports.createUser = (req, res, next) => {
         .then((user) => res.send({ data: user }))
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            next(new BAD_REQUEST_ERROR('Некорректные данные пользователя'));
+            next(new BAD_REQUEST_ERROR(badRequestUser));
             return;
           }
           if (err.name === 'MongoServerError') {
-            next(new CONFLICT_ERROR('Пользователь с такими данными уже существует'));
+            next(new CONFLICT_ERROR(conflictUser));
             return;
           }
           next(err);
@@ -66,13 +69,17 @@ module.exports.updateProfile = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, { email, name }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        throw new NOT_FOUND_ERROR('Запрашиваемый пользователь не найден');
+        throw new NOT_FOUND_ERROR(notFoundUser);
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BAD_REQUEST_ERROR('Некорректные данные пользователя'));
+        next(new BAD_REQUEST_ERROR(badRequestUser));
+        return;
+      }
+      if (err.name === 'MongoServerError') {
+        next(new CONFLICT_ERROR(conflictUser));
         return;
       }
       next(err);
@@ -85,7 +92,7 @@ module.exports.login = (req, res, next) => {
 
   User.findOne({ email })
     .select('+password')
-    .orFail(() => new UNAUTHORIZED_ERROR('Неправильный email или пароль'))
+    .orFail(() => new UNAUTHORIZED_ERROR(unauthorisedUser))
     .then((user) => {
       bcrypt.compare(password, user.password)
         .then((isValid) => {
@@ -99,9 +106,9 @@ module.exports.login = (req, res, next) => {
               sameSite: true,
               httpOnly: true,
             });
-            res.send({ data: user.toJSON() });
+            res.send({ data: user });
           } else {
-            res.status(401).send({ message: 'Неправильный пароль или email' });
+            throw new UNAUTHORIZED_ERROR(unauthorisedUser);
           }
         });
     })
@@ -110,16 +117,7 @@ module.exports.login = (req, res, next) => {
 
 // удаляет JWT из куков после выхода
 module.exports.logout = (req, res, next) => {
-  User.findById(jwt.decode(req.cookies.jwt)._id)
-    .then((user) => {
-      if (!user) {
-        throw new NOT_FOUND_ERROR('Запрашиваемый пользователь не найден');
-      }
-      res.clearCookie('jwt');
-      res.send({ message: 'Токен удалён' });
-    })
-    .catch((err) => {
-      res.send(err);
-    })
-    .catch(next);
+  res.clearCookie('jwt');
+  res.send({ message: 'Токен удалён' });
+  next();
 };

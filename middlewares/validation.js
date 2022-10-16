@@ -3,7 +3,7 @@ const regExForUrl = require('../utils/regex');
 
 module.exports.validateUserCreation = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -41,6 +41,6 @@ module.exports.validateMovieCreation = celebrate({
 
 module.exports.validateMovieDeletion = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().hex().length(24),
+    movieId: Joi.string().required().hex().length(24),
   }),
 });

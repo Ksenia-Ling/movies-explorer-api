@@ -1,0 +1,12 @@
+module.exports.badRequestMovie = 'Некорректные данные фильма';
+module.exports.notFoundMovie = 'Запрашиваемый фильм не найден';
+module.exports.notOwnerMovie = 'Удалять фильмы может только их владелец';
+module.exports.wrongIdMovie = 'Некорректный id';
+module.exports.notFoundUser = 'Запрашиваемый пользователь не найден';
+module.exports.wrongIdUser = 'Некорректный id пользователя';
+module.exports.badRequestUser = 'Некорректные данные пользователя';
+module.exports.conflictUser = 'Пользователь с такими данными уже существует';
+module.exports.unauthorisedUser = 'Неправильный email или пароль';
+module.exports.notFoundPage = 'Запрашиваемая страница не найдена';
+module.exports.crashServer = 'Сервер сейчас упадёт';
+module.exports.unauthorisedError = 'Необходима авторизация';
