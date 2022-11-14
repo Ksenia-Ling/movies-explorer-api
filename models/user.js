@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const regExForName = require('../utils/regex');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -27,6 +28,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 2,
     maxlength: 30,
+    validate: {
+      validator(v) {
+        return regExForName.test(v);
+      },
+      message: 'Имя может содержать только латиницу, кириллицу, пробел или дефис',
+    },
   },
 });
 

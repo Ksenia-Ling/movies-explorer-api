@@ -15,7 +15,7 @@ const routes = require('./routes/index');
 const cors = require('./middlewares/cors');
 const { MONGO_URL_DEV } = require('./utils/config');
 
-const { PORT = 3000, MONGO_URL_PROD, NODE_ENV } = process.env;
+const { PORT = 4000, MONGO_URL_PROD, NODE_ENV } = process.env;
 
 const app = express();
 
