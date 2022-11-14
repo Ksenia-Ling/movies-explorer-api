@@ -110,7 +110,8 @@ module.exports.login = (req, res, next) => {
           } else {
             throw new UNAUTHORIZED_ERROR(unauthorisedUser);
           }
-        });
+        })
+        .catch(next);
     })
     .catch(next);
 };
