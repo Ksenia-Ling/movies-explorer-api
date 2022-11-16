@@ -1,6 +1,6 @@
 const allowedCors = [
-  // 'https://movies.ksenia-ling.nomoredomains.icu',
-  // 'http://movies.ksenia-ling.nomoredomains.icu',
+  'https://movies.ksenia-ling.nomoredomains.icu',
+  'http://movies.ksenia-ling.nomoredomains.icu',
   'https://api.movies.ksenia-ling.nomoredomains.icu',
   'http://api.movies.ksenia-ling.nomoredomains.icu',
   'http://localhost:3000',
